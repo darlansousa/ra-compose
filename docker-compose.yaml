@@ -17,7 +17,7 @@ services:
     networks:
       - ra-network
   ra-api:
-    image: ra-api:latest
+    image: darlankenobi/ra-api:latest
     container_name: ra-api
     environment:
       RA_API_DB_NAME: ra_collector
@@ -33,7 +33,7 @@ services:
       - db
 
   ra-dash:
-    image: ra-dash:latest
+    image: darlankenobi/ra-dash:latest
     container_name: ra-dash 
     environment:
       PORT: 3001
