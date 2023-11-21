@@ -1,0 +1,51 @@
+version: '3.8'
+
+services:
+  db:
+    image: mysql:8.0
+    container_name: db
+    volumes:
+      - ./mysql-data:/var/lib/mysql
+      - ./data/init.sql:/data/application/init.sql
+    command: --default-authentication-plugin=mysql_native_password --init-file /data/application/init.sql        
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: ra_collector
+    ports:
+      - "3306:3306"
+    networks:
+      - ra-network
+  ra-api:
+    image: ra-api:latest
+    container_name: ra-api
+    environment:
+      RA_API_DB_NAME: ra_collector
+      RA_API_DB_USER: root
+      RA_API_DB_PASS: root
+      RA_API_DB_HOST: db
+      RA_API_PORT: 3000
+    ports:
+      - "3000:3000"
+    networks:
+      - ra-network
+    depends_on:
+      - db
+
+  ra-dash:
+    image: ra-dash:latest
+    container_name: ra-dash 
+    environment:
+      PORT: 3001
+      REACT_APP_API_HOST: "http://localhost:3000"
+      REACT_APP_COMPLAINTS_LINK: "https://rec/"
+    ports:
+      - "3001:3001"
+    networks:
+      - ra-network
+    depends_on:
+      - db
+networks:
+  ra-network:
+    name: ra-network
+    driver: bridge
