@@ -51,6 +51,7 @@ services:
     environment:
       PORT: 3001
       REACT_APP_API_HOST: "http://localhost:3000"
+      REACT_APP_API_AI_HOST: "http://localhost:80"
       REACT_APP_COMPLAINTS_LINK: "https://rec/"
     ports:
       - "3001:3001"
@@ -58,6 +59,18 @@ services:
       - ra-network
     depends_on:
       - db
+  ra-ai-classifier-api:
+    image: ra-ai-classifier-api:latest
+    container_name: ra-ai-classifier-api
+    environment:
+      OPENAI_API_KEY: "key"
+      OPENAI_API_MODEL: "gpt-3.5-turbo-instruct"
+    ports:
+      - "80:80"
+    networks:
+      - ra-network
+    depends_on:
+      - mongodb
 networks:
   ra-network:
     name: ra-network
