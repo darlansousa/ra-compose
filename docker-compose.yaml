@@ -16,6 +16,20 @@ services:
       - "3306:3306"
     networks:
       - ra-network
+  mongodb:
+    image: mongo:4.2.3-bionic
+    container_name: my-mongodb
+    ports:
+      - 27017:27017
+    environment:
+      - MONGO_INITDB_DATABASE=valentini
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=admin
+    volumes:
+      - ./mongodb:/data/db
+      - ./mongoconfig:/data/configdb
+    networks:
+      - ra-network
   ra-api:
     image: darlankenobi/ra-api:latest
     container_name: ra-api
@@ -31,7 +45,6 @@ services:
       - ra-network
     depends_on:
       - db
-
   ra-dash:
     image: darlankenobi/ra-dash:latest
     container_name: ra-dash 
